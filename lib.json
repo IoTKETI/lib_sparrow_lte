@@ -1,0 +1,8 @@
+{
+    "name": "lib_sparrow_lte",
+    "target": "arm",
+    "description": "[name] [portnum] [baudrate]",
+    "scripts": "node lib_sparrow_lte.js lib_sparrow_lte /dev/ttyUSB1 115200",
+    "data": ["LTE"],
+    "control": []
+}
