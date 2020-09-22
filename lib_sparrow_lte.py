@@ -56,6 +56,8 @@ def msw_mqtt_connect(broker_ip, port):
 
 def missionPortOpening(missionPort, missionPortNum, missionBaudrate, missionLTE):
     global lteQ
+    global lib
+    
     if (missionPort == None):
         try:
             missionPort = serial.Serial(missionPortNum, missionBaudrate, timeout = 2)
@@ -76,7 +78,7 @@ def missionPortOpening(missionPort, missionPortNum, missionBaudrate, missionLTE)
             missionPortOpen()
 
             # lteQ.rssi = -Math.random()*100;
-            container_name = 'LTE'
+            container_name = lib["name"]
             data_topic = '/MUV/data/' + lib["name"] + '/' + container_name
             send_data_to_msw(data_topic, lteQ)
 
