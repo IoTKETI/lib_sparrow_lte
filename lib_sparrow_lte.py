@@ -114,7 +114,7 @@ def missionPortData(missionPort, missionLTE):
         arrLTEQ = missionStr[1].decode("utf-8").split(", ")
         
         if (missionLTE == 'KT'):
-	    lte!['type'] = missionLTE
+            lteQ['type'] = missionLTE
             for idx in range(len(arrLTEQ)):
                 arrQValue = arrLTEQ[idx].split(':')
                 if (arrQValue[0] == '@DBG'):
@@ -143,7 +143,7 @@ def missionPortData(missionPort, missionLTE):
                     lteQ['sinr'] = float(arrQValue[1][:-2])
 
         elif (missionLTE == 'SKT'):
-	    lte!['type'] = missionLTE
+            lteQ['type'] = missionLTE
             arrQValue_0 = arrLTEQ[0].split(':')
             if (arrQValue_0[0] == '@DBG'):
                     lteQ['earfcn_dl'] = arrQValue_0[2].split(',')[0].split('/')[0]
@@ -204,7 +204,7 @@ def missionPortData(missionPort, missionLTE):
                     lteQ['missdn'] = int(arrQValue_1_data[1])
 
         elif (missionLTE == 'LG'):
-	    lte!['type'] = missionLTE
+            lteQ['type'] = missionLTE
             for idx in range(len(arrLTEQ)):
                 arrQValue = arrLTEQ[idx].split(':')
                 if (arrQValue[0] == '@DBG'):
