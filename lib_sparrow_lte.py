@@ -5,8 +5,6 @@ from time import sleep
 
 argv = sys.argv
 
-# my_lib_name = 'lib_sparrow_lte'
-
 global lib_topic
 global lib_mqtt_client
 
@@ -24,7 +22,7 @@ def on_connect(client,userdata,flags, rc):
 def on_disconnect(client, userdata, flags, rc=0):
 	print(str(rc))
 
-
+	
 def on_publish(client, userdata, mid):
     print("In on_pub callback mid= ", mid)
 
@@ -253,7 +251,6 @@ def missionPortData(missionPort, missionLTE):
         send_data_to_msw(data_topic, lteQ)
 
         lteQ = dict()
-        # print(lteQ)
 
 
 if __name__ == '__main__':
