@@ -187,3 +187,5 @@ if __name__ == '__main__':
     missionPortNum = lib["serialPortNum"]
     missionBaudrate = lib["serialBaudrate"]
     missionPortOpening(missionPort, missionPortNum, missionBaudrate)
+
+# python -m PyInstaller lib_kt_lte.py
