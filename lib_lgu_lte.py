@@ -11,6 +11,28 @@ global lib_mqtt_client
 global missionPort
 global lteQ
 
+def lteQ_init():
+    global lteQ
+
+    lteQ = dict()
+    lteQ['frequency'] = 0
+    lteQ['band'] = 0
+    lteQ['bandwidth'] = 0
+    lteQ['cell_id'] = ""
+    lteQ['rsrp'] = 0.0
+    lteQ['rssi'] = 0.0
+    lteQ['rsrq'] = 0.0
+    lteQ['bler'] = 0.0
+    lteQ['tx_power'] = 0
+    lteQ['plmn'] = ""
+    lteQ['tac'] = 0
+    lteQ['drx'] = 0
+    lteQ['emm_state'] = ""
+    lteQ['rrc_state'] = ""
+    lteQ['net_op_mode'] = ""
+    lteQ['emm_cause'] = 0
+    lteQ['esm_cause'] = ""
+
 
 def on_connect(client,userdata,flags, rc):
     if rc == 0:
@@ -22,7 +44,7 @@ def on_connect(client,userdata,flags, rc):
 def on_disconnect(client, userdata, flags, rc=0):
 	print(str(rc))
 
-	
+
 def on_publish(client, userdata, mid):
     print("In on_pub callback mid= ", mid)
 
@@ -55,7 +77,7 @@ def msw_mqtt_connect(broker_ip, port):
 def missionPortOpening(missionPort, missionPortNum, missionBaudrate):
     global lteQ
     global lib
-    
+
     if (missionPort == None):
         try:
             missionPort = serial.Serial(missionPortNum, missionBaudrate, timeout = 2)
@@ -106,59 +128,65 @@ def send_data_to_msw (data_topic, obj_data):
 
 def missionPortData(missionPort):
     global lteQ
-    lteQ = dict()
+
+    lteQ = lteQ_init()
+
     while True:
-        lteReqGetRssi(missionPort)
-        missionStr = missionPort.readlines()
+        try:
+            lteReqGetRssi(missionPort)
+            missionStr = missionPort.readlines()
 
-        arrLTEQ = missionStr[1].decode("utf-8").split(", ")
-        
-        for idx in range(len(arrLTEQ)):
-            arrQValue = arrLTEQ[idx].split(':')
-            if (arrQValue[0] == '@DBG'):
-                lteQ['frequency'] = int(arrQValue[2])
-            elif (arrQValue[0] == 'Band'):
-                lteQ['band'] = int(arrQValue[1])
-            elif (arrQValue[0] == 'BW'):
-                lteQ['bandwidth'] = int(arrQValue[1][:-3])
-            elif (arrQValue[0] == 'Cell ID'):
-                lteQ['cell_id'] = arrQValue[1]
-            elif (arrQValue[0] == 'RSRP'):
-                lteQ['rsrp'] = float(arrQValue[1][:-3])
-            elif (arrQValue[0] == 'RSSI'):
-                lteQ['rssi'] = float(arrQValue[1][:-3])
-            elif (arrQValue[0] == 'RSRQ'):
-                lteQ['rsrq'] = float(arrQValue[1][:-2])
-            elif (arrQValue[0] == 'BLER'):
-                lteQ['bler'] = float(arrQValue[1][:-2])
-            elif (arrQValue[0] == 'Tx Power'):
-                lteQ['tx_power'] = int(arrQValue[1])
-            elif (arrQValue[0] == 'PLMN'):
-                lteQ['plmn'] = arrQValue[1]
-            elif (arrQValue[0] == 'TAC'):
-                lteQ['tac'] = int(arrQValue[1])
-            elif (arrQValue[0] == 'DRX cycle length'):
-                lteQ['drx'] = int(arrQValue[1])
-            elif (arrQValue[0] == 'EMM state'):
-                lteQ['emm_state'] = arrQValue[1]
-            elif (arrQValue[0] == 'RRC state'):
-                lteQ['rrc_state'] = arrQValue[1]
-            elif (arrQValue[0] == 'Net OP Mode'):
-                lteQ['net_op_mode'] = arrQValue[1]
-            elif (arrQValue[0] == 'EMM Cause'):
-                lteQ['emm_cause'] = int(arrQValue[1])
-            elif (arrQValue[0] == 'ESM Cause'):
-                lteQ['esm_cause'] = arrQValue[1].split(",")[0]
+            arrLTEQ = missionStr[1].decode("utf-8").split(", ")
 
-        # print ('lteQ: \n', lteQ)
+            for idx in range(len(arrLTEQ)):
+                arrQValue = arrLTEQ[idx].split(':')
+                if (arrQValue[0] == '@DBG'):
+                    lteQ['frequency'] = int(arrQValue[2])
+                elif (arrQValue[0] == 'Band'):
+                    lteQ['band'] = int(arrQValue[1])
+                elif (arrQValue[0] == 'BW'):
+                    lteQ['bandwidth'] = int(arrQValue[1][:-3])
+                elif (arrQValue[0] == 'Cell ID'):
+                    lteQ['cell_id'] = arrQValue[1]
+                elif (arrQValue[0] == 'RSRP'):
+                    lteQ['rsrp'] = float(arrQValue[1][:-3])
+                elif (arrQValue[0] == 'RSSI'):
+                    lteQ['rssi'] = float(arrQValue[1][:-3])
+                elif (arrQValue[0] == 'RSRQ'):
+                    lteQ['rsrq'] = float(arrQValue[1][:-2])
+                elif (arrQValue[0] == 'BLER'):
+                    lteQ['bler'] = float(arrQValue[1][:-2])
+                elif (arrQValue[0] == 'Tx Power'):
+                    lteQ['tx_power'] = int(arrQValue[1])
+                elif (arrQValue[0] == 'PLMN'):
+                    lteQ['plmn'] = arrQValue[1]
+                elif (arrQValue[0] == 'TAC'):
+                    lteQ['tac'] = int(arrQValue[1])
+                elif (arrQValue[0] == 'DRX cycle length'):
+                    lteQ['drx'] = int(arrQValue[1])
+                elif (arrQValue[0] == 'EMM state'):
+                    lteQ['emm_state'] = arrQValue[1]
+                elif (arrQValue[0] == 'RRC state'):
+                    lteQ['rrc_state'] = arrQValue[1]
+                elif (arrQValue[0] == 'Net OP Mode'):
+                    lteQ['net_op_mode'] = arrQValue[1]
+                elif (arrQValue[0] == 'EMM Cause'):
+                    lteQ['emm_cause'] = int(arrQValue[1])
+                elif (arrQValue[0] == 'ESM Cause'):
+                    lteQ['esm_cause'] = arrQValue[1].split(",")[0]
 
-        container_name = lib["data"][0]
-        data_topic = '/MUV/data/' + lib["name"] + '/' + container_name
-        lteQ = json.dumps(lteQ)
+            # print ('lteQ: \n', lteQ)
 
-        send_data_to_msw(data_topic, lteQ)
+            container_name = lib["data"][0]
+            data_topic = '/MUV/data/' + lib["name"] + '/' + container_name
+            lteQ = json.dumps(lteQ)
 
-        lteQ = dict()
+            send_data_to_msw(data_topic, lteQ)
+
+           lteQ = json.loads(lteQ)
+
+        except (TypeError, ValueError):
+            lteQ_init()
 
 
 if __name__ == '__main__':
@@ -198,4 +226,4 @@ if __name__ == '__main__':
     missionBaudrate = lib["serialBaudrate"]
     missionPortOpening(missionPort, missionPortNum, missionBaudrate)
 
-# python -m PyInstaller lib_lgu_lte.py
+# python -m PyInstaller lib_lgu_lte.py 
