@@ -56,7 +56,8 @@ def on_disconnect(client, userdata, flags, rc=0):
 
 	
 def on_publish(client, userdata, mid):
-    print("In on_pub callback mid= ", mid)
+    i = 1
+    # print("In on_pub callback mid= ", mid)
 
 
 def on_subscribe(client, userdata, mid, granted_qos):
@@ -99,15 +100,12 @@ def missionPortOpening(missionPort, missionPortNum, missionBaudrate):
 
             return missionPort
 
-        except serial.SerialException as e:
-            missionPortError(e)
         except TypeError as e:
             missionPortClose()
     else:
         if (missionPort.is_open == False):
             missionPortOpen()
 
-            # lteQ.rssi = -Math.random()*100;
             container_name = lib["name"]
             data_topic = '/MUV/data/' + lib["name"] + '/' + container_name
             send_data_to_msw(data_topic, lteQ)
@@ -139,8 +137,7 @@ def send_data_to_msw (data_topic, obj_data):
 def missionPortData(missionPort):
     global lteQ
 
-    # lteQ = dict()
-    lteQ = lteQ_init()
+    lteQ_init()
 
     while True:
         try:
@@ -148,7 +145,7 @@ def missionPortData(missionPort):
             missionStr = missionPort.readlines()
 
             arrLTEQ = missionStr[1].decode("utf-8").split(", ")
-            print(arrLTEQ)
+            # print(arrLTEQ)
             arrQValue_0 = arrLTEQ[0].split(':')
             if (arrQValue_0[0] == '@DBG'):
                     lteQ['earfcn_dl'] = arrQValue_0[2].split(',')[0].split('/')[0]
@@ -213,8 +210,7 @@ def missionPortData(missionPort):
 
             # print ('lteQ: \n', lteQ)
 
-            container_name = lib["data"][0]
-            data_topic = '/MUV/data/' + lib["name"] + '/' + container_name
+            data_topic = '/MUV/data/' + lib["name"] + '/' + lib["data"][0]
             lteQ = json.dumps(lteQ)
 
             send_data_to_msw(data_topic, lteQ)

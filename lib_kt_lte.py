@@ -41,7 +41,8 @@ def on_disconnect(client, userdata, flags, rc=0):
 
 
 def on_publish(client, userdata, mid):
-    print("In on_pub callback mid= ", mid)
+    i = 1
+    # print("In on_pub callback mid= ", mid)
 
 
 def on_subscribe(client, userdata, mid, granted_qos):
@@ -84,8 +85,6 @@ def missionPortOpening(missionPort, missionPortNum, missionBaudrate):
 
             return missionPort
 
-        except serial.SerialException as e:
-            missionPortError(e)
         except TypeError as e:
             missionPortClose()
     else:
@@ -162,8 +161,7 @@ def missionPortData(missionPort):
 
             # print ('lteQ: \n', lteQ)
 
-            container_name = lib["data"][0]
-            data_topic = '/MUV/data/' + lib["name"] + '/' + container_name
+            data_topic = '/MUV/data/' + lib["name"] + '/' + lib["data"][0]
             lteQ = json.dumps(lteQ)
 
             send_data_to_msw(data_topic, lteQ)
@@ -172,7 +170,8 @@ def missionPortData(missionPort):
 
         except (TypeError, ValueError):
             lteQ_init()
-
+        except serial.SerialException as e:
+            missionPortError(e)
 
 if __name__ == '__main__':
     my_lib_name = 'lib_kt_lte'
