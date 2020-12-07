@@ -105,10 +105,8 @@ def missionPortData():
     global missionPort
     global lteQ
 
-    lteQ_init()
-
     try:
-        lteReqGetRssi(missionPort)
+        lteReqGetRssi()
         missionStr = missionPort.readlines()
 
         arrLTEQ = missionStr[1].decode("utf-8").split(", ")

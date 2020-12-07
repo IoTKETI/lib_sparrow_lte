@@ -158,7 +158,6 @@ def missionPortData():
         else:
             pass
 
-        container_name = lib["data"][0]
         data_topic = '/MUV/data/' + lib["name"] + '/' + lib["data"][0]
         lteQ = json.dumps(lteQ)
 

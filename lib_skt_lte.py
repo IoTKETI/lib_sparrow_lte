@@ -10,10 +10,7 @@ lteQ = {}
 
 def lteQ_init():
     global lteQ
-
-    lteQ['earfcn_dl'] = ""
-    lteQ['earfcn_ul'] = ""
-    lteQ['rf_state'] = ""
+    
     lteQ['band'] = 0
     lteQ['bandwidth'] = 0
     lteQ['plmn'] = 0
@@ -39,7 +36,8 @@ def lteQ_init():
     lteQ['antbar'] = 0
     lteQ['imsi'] = 0
     lteQ['missdn'] = 0
-
+    
+#---MQTT----------------------------------------------------------------
 def on_connect(client,userdata,flags, rc):
     if rc == 0:
         print('[msw_mqtt_connect] connect to ', broker_ip)
@@ -65,7 +63,7 @@ def msw_mqtt_connect(broker_ip, port):
     lib_mqtt_client.connect(broker_ip, port)
 
     lib_mqtt_client.loop_start()
-
+#-----------------------------------------------------------------------
 
 def missionPortOpening(missionPortNum, missionBaudrate):
     global missionPort
@@ -103,12 +101,15 @@ def missionPortError(err):
 
 def lteReqGetRssi():
     global missionPort
+    
     if missionPort is not None:
         if missionPort.is_open:
             atcmd = b'AT@DBG\r'
             missionPort.write(atcmd)
 
 def send_data_to_msw (data_topic, obj_data):
+    global lib_mqtt_client
+
     lib_mqtt_client.publish(data_topic, obj_data)
 
 
@@ -116,10 +117,8 @@ def missionPortData():
     global missionPort
     global lteQ
 
-    lteQ_init()
-
     try:
-        lteReqGetRssi(missionPort)
+        lteReqGetRssi()
         missionStr = missionPort.readlines()
 
         arrLTEQ = missionStr[1].decode("utf-8").split(", ")
